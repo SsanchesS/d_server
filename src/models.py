@@ -7,7 +7,7 @@ class usersM(BaseModel):
     s_name: Optional[str] = None    
     password: Optional[constr(min_length=8, max_length=32)] = None
     email: Optional[EmailStr] = None
-    role_id: int
+    role_id: Optional[int]
 
 class LoginM(BaseModel):
     password: constr(min_length=8, max_length=32)

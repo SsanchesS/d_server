@@ -8,7 +8,7 @@ CREATE TABLE users(
   s_name TEXT,
   password TEXT,
   email TEXT UNIQUE,
-  role_id INTEGER,
+  role_id INTEGER DEFAULT 0,
   FOREIGN KEY (role_id) REFERENCES role (id)
 );
 CREATE TABLE products(

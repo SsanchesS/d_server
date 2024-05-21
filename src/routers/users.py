@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from src.models import usersM,ordersM
-from src.resolvers.users import get_user,upd_user,del_user, get_orders,create_order,del_order
+from src.resolvers.users import get_user,upd_user,del_user, get_orders,create_order,del_order ,get_sneakers
 
 users_router = APIRouter()
 
@@ -31,6 +31,15 @@ def f_delete_user(id: int):
         return {"code": 404, "message": f"Пользователь с таким id: {id} не найден","user":None}
     return {"code": 201, "message": "Успешно",'user': user}
 
+###########
+@users_router.get('/sneakers/')
+def f_get_sneakers():
+    sneakers = get_sneakers()
+    if sneakers == 500:
+        return {"code": 500, "message": "Ошибка сервера","sneakers":None}
+    if sneakers is None:
+        return {"code": 404, "message": f"Кроссовки не найдены","sneakers":None}
+    return {"code": 201, "message": "Успешно",'sneakers': sneakers}
 ###########
 
 @users_router.get('/orders/{user_id}')

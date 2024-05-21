@@ -5,9 +5,10 @@ from src.models import usersM,ordersM
 def get_user(id):
     try:
         user = base_worker.insert_data(f"SELECT * FROM users WHERE id = {id}",())
-        if user is None:
+        if not user:
             return None
-        user = {"id":user[0],"f_name":user[1],"s_name":user[2],"password":None,"email":user[4]}
+        user = user[0]
+        user = {"id":user[0],"f_name":user[1],"s_name":user[2],"password":None,"email":user[4],"role_id":user[5],"itemsPrice":user[6],"sneakers_basket":user[7]}
         return user  
     except Exception as e:
         print(f"Ошибка {e}")
@@ -29,6 +30,12 @@ def upd_user(id, user: usersM): # сюда свой id из клинтка пи�
         if user.email is not None and user.email != '':
             update_fields.append(f"email = '{user.email}'")
 
+        if user.itemsPrice is not None and user.itemsPrice != '':
+            update_fields.append(f"itemsPrice = '{user.itemsPrice}'")
+
+        if user.sneakers_basket is not None and user.sneakers_basket != '':
+            update_fields.append(f"sneakers_basket = '{user.sneakers_basket}'")
+
         update_fields_str = ', '.join(update_fields)
 
         try:
@@ -41,8 +48,10 @@ def upd_user(id, user: usersM): # сюда свой id из клинтка пи�
         except sqlite3.IntegrityError as e:
             print(f"Ошибка: {e}")
             return None
-
-        user = {"id":user_id[0],"f_name":None,"s_name":None,"password":None,"email":None}
+        if not user_id:
+            return None
+        user_id = user_id[0]
+        user = {"id":user_id[0],"f_name":None,"s_name":None,"password":None,"email":None,"role_id":None,"itemsPrice":None,"sneakers_basket":None}
         return user  
     except Exception as e:
         print(f"Ошибка {e}")
@@ -51,23 +60,45 @@ def upd_user(id, user: usersM): # сюда свой id из клинтка пи�
 def del_user(id): # сюда свой id из клинтка пихаем из обьекта
     try:
         user_id = base_worker.insert_data(f"DELETE FROM users WHERE id = {id} RETURNING id;",())
-        if user_id is None:
+        if not user_id:
             return None
         else:
-            user = {"id":user_id[0],"f_name":None,"s_name":None,"password":None,"email":None}
+            user_id = user_id[0]
+            user = {"id":user_id[0],"f_name":None,"s_name":None,"password":None,"email":None,"role_id":None,"itemsPrice":None,"sneakers_basket":None}
             return user  
     except Exception as e:
         print(f"Ошибка {e}")
         return 500
+    
 ##########
+def get_sneakers():
+    try:
+        get_sneakers = base_worker.insert_data(f"SELECT * FROM sneakers",())
+        if not get_sneakers:
+            return None
+        
+        sneakers = []
+        for item in get_sneakers:
+            sneaker = {"id":item[0],"des":item[1],"price":item[2],"img":item[3],"category_id":item[4]}
+            sneakers.append(sneaker)
+        return sneakers
+    except Exception as e:
+        print(f"Ошибка {e}")
+        return 500
+##########
+
 def get_orders(user_id):
     try:
-        orders = base_worker.insert_data(f"SELECT * FROM orders WHERE user_id = {user_id}",())
-        if orders is None:
+        get_orders = base_worker.insert_data(f"SELECT * FROM orders WHERE user_id = {user_id}",())
+        if not get_orders:
             return None
-        print(orders)
-        # order = {"id":order[0],"user_id":None,"order_date":order[2],"sum":order[3],"status":order[4],"delivery_method_id":order[5],"payment_method_id":order[6]}
-        # return orders
+        
+        orders = []
+        for item in get_orders:
+            order = {"id":item[0],"user_id":None,"order_date":item[2],"sum":item[3],"status":item[4],"delivery_method_id":item[5],"payment_method_id":item[6]}
+            orders.append(order)
+        return orders
+    
     except Exception as e:
         print(f"Ошибка {e}")
         return 500
@@ -88,9 +119,10 @@ def create_order(order:ordersM):
         INSERT INTO orders ({fields_str})
         VALUES ({values_str})
         RETURNING id;                                                                                                 
-        """, ())    
-        if new_id is None:
-            return None                                                                                                    
+        """, ())            
+        if not new_id:
+            return None    
+        new_id = new_id[0]                                                                                                
         order = {"id":new_id[0],"user_id":None,"order_date":order.order_date,"sum":order.sum,"status":order.status,"delivery_method_id":order.delivery_method_id,"payment_method_id":order.payment_method_id}
         return order   
     except sqlite3.IntegrityError as e:
@@ -100,9 +132,10 @@ def create_order(order:ordersM):
 def del_order(user_id, id):
     try:
         order_id = base_worker.insert_data(f"DELETE FROM orders WHERE user_id = ? AND id = ? RETURNING id;",(user_id,id))
-        if order_id is None:
+        if not order_id:
             return None
         else:
+            order_id = order_id[0]
             order = {"id":order_id[0],"user_id":None,"order_date":None,"sum":None,"status":None,"delivery_method_id":None,"payment_method_id":None}
             return order  
     except Exception as e:

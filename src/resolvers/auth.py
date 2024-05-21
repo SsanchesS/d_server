@@ -4,9 +4,10 @@ from src.base import base_worker
 def check_login_request(user: LoginM):
     try:
         get_user = base_worker.insert_data(f"SELECT * FROM users WHERE email = ? AND password = ?",(user.email,user.password))
-        if get_user is None:
+        if not get_user:
             return None
-        user = {"id":get_user[0],"f_name":get_user[1],"s_name":get_user[2],"password":None,"email":get_user[4]}     
+        get_user = get_user[0]
+        user = {"id":get_user[0],"f_name":get_user[1],"s_name":get_user[2],"password":None,"email":get_user[4],"role_id":get_user[5],"itemsPrice":get_user[6],"sneakers_basket":get_user[7]}    
         return user 
     except Exception as e:
         print(f"Ошибка {e}")

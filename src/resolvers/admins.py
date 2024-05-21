@@ -1,7 +1,7 @@
 import sqlite3
 from src.base import base_worker
 from src.models import usersM,ordersM
-
+# Переделать
 def get_user(id):
     try:
         user = base_worker.insert_data(f"SELECT * FROM users WHERE id = {id}",())

@@ -15,7 +15,7 @@ class BaseWorker:
         connection = sqlite3.connect(self.base_path)
         cur = connection.cursor()
 
-        with open(sql_file, 'r') as file:
+        with open(sql_file, 'r', encoding='utf-8') as file:
             scripts = file.read()
             try:
                 cur.executescript(scripts)
@@ -30,8 +30,9 @@ class BaseWorker:
         print("Работа с БД...")
         connection = sqlite3.connect(self.base_path, isolation_level=None)
         cur = connection.cursor()
-        res = cur.execute(query, args).fetchone()
+        res = cur.execute(query, args).fetchall()
         connection.commit()
         connection.close()
         return res
+    
 base_worker = BaseWorker()

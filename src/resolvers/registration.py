@@ -22,7 +22,7 @@ def create_user(user:usersM):
         if not new_id:
             return None     
         new_id = new_id[0]                                                                                               
-        user = {"id":new_id[0],"f_name":user.f_name,"s_name":user.s_name,"password":None,"email":user.email,"role_id":user.role_id,"itemsPrice":user.itemsPrice,"sneakers_basket":user.sneakers_basket}
+        user = {"id":new_id[0],"f_name":user.f_name,"s_name":user.s_name,"password":None,"email":user.email,"role_id":user.role_id,"itemsPrice":user.itemsPrice,"sneakers_basket":user.sneakers_basket,"sneakers_orders":user.sneakers_orders}
         return user   
     except sqlite3.IntegrityError as e:
         print(f"Ошибка: {e}")

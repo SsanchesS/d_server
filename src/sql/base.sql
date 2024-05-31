@@ -11,7 +11,8 @@ CREATE TABLE users(
   role_id INTEGER DEFAULT 0,
 
   itemsPrice INTEGER DEFAULT 0,
-  sneakers_basket TEXT DEFAULT "",
+  sneakers_basket TEXT DEFAULT Null,
+  sneakers_orders TEXT DEFAULT Null,
 
   FOREIGN KEY (role_id) REFERENCES role (id)
 );

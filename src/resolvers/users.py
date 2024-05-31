@@ -8,7 +8,20 @@ def get_user(id):
         if not user:
             return None
         user = user[0]
-        user = {"id":user[0],"f_name":user[1],"s_name":user[2],"password":None,"email":user[4],"role_id":user[5],"itemsPrice":user[6],"sneakers_basket":user[7]}
+
+        sneakers_basket = []
+        for item in user[7]:
+            id = item[0]
+            sneaker = get_sneaker(id)
+            if (sneaker == 500):
+                return 500
+            sneakers_basket.append(sneaker)
+
+        sneakers_orders=get_orders(user[0])
+        if (sneakers_orders == 500):
+            return 500
+
+        user = {"id":user[0],"f_name":user[1],"s_name":user[2],"password":None,"email":user[4],"role_id":user[5],"itemsPrice":user[6],"sneakers_basket":sneakers_basket,"sneakers_orders":sneakers_orders}
         return user  
     except Exception as e:
         print(f"Ошибка {e}")
@@ -36,6 +49,9 @@ def upd_user(id, user: usersM): # сюда свой id из клинтка пи�
         if user.sneakers_basket is not None and user.sneakers_basket != '':
             update_fields.append(f"sneakers_basket = '{user.sneakers_basket}'")
 
+        if user.sneakers_orders is not None and user.sneakers_orders != '':
+            update_fields.append(f"sneakers_orders = '{user.sneakers_orders}'")
+
         update_fields_str = ', '.join(update_fields)
 
         try:
@@ -51,7 +67,7 @@ def upd_user(id, user: usersM): # сюда свой id из клинтка пи�
         if not user_id:
             return None
         user_id = user_id[0]
-        user = {"id":user_id[0],"f_name":None,"s_name":None,"password":None,"email":None,"role_id":None,"itemsPrice":None,"sneakers_basket":None}
+        user = {"id":user_id[0],"f_name":None,"s_name":None,"password":None,"email":None,"role_id":None,"itemsPrice":None,"sneakers_basket":None,"sneakers_orders":None}
         return user  
     except Exception as e:
         print(f"Ошибка {e}")
@@ -64,7 +80,7 @@ def del_user(id): # сюда свой id из клинтка пихаем из �
             return None
         else:
             user_id = user_id[0]
-            user = {"id":user_id[0],"f_name":None,"s_name":None,"password":None,"email":None,"role_id":None,"itemsPrice":None,"sneakers_basket":None}
+            user = {"id":user_id[0],"f_name":None,"s_name":None,"password":None,"email":None,"role_id":None,"itemsPrice":None,"sneakers_basket":None,"sneakers_orders":None}
             return user  
     except Exception as e:
         print(f"Ошибка {e}")
@@ -85,8 +101,20 @@ def get_sneakers():
     except Exception as e:
         print(f"Ошибка {e}")
         return 500
-##########
 
+def get_sneaker(id):
+    try:
+        get_sneaker = base_worker.insert_data(f"SELECT * FROM sneakers WHERE id = {id}",())
+        if not get_sneaker:
+            return None
+        
+        sneaker = {"id":get_sneaker[0],"des":get_sneaker[1],"price":get_sneaker[2],"img":get_sneaker[3],"category_id":get_sneaker[4]}
+        return sneaker
+    
+    except Exception as e:
+        print(f"Ошибка {e}")
+        return 500
+##########
 def get_orders(user_id):
     try:
         get_orders = base_worker.insert_data(f"SELECT * FROM orders WHERE user_id = {user_id}",())

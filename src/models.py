@@ -17,6 +17,7 @@ class usersM(BaseModel):
 
     itemsPrice: Optional[int] = 0                             # or None
     sneakers_basket: Optional[str] = None
+    sneakers_orders: Optional[str] = None
 
 class LoginM(BaseModel):
     password: constr(min_length=8, max_length=32)

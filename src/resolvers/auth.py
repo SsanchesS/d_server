@@ -1,3 +1,4 @@
+import json
 from src.models import LoginM 
 from src.base import base_worker
 from src.resolvers.users import get_orders,get_sneaker
@@ -8,10 +9,11 @@ def check_login_request(user: LoginM):
             return None
         get_user = get_user[0]   
 
-        if get_user[7] is not None:
+        if get_user[7] is not None:            
             sneakers_basket = []
-            for item in get_user[7]:
-                id = item[0]
+            mas_sneakers_basket = json.loads(get_user[7])
+            for item in mas_sneakers_basket:
+                id = item
                 sneaker = get_sneaker(id)
                 if (sneaker == 500):
                     return 500
@@ -20,6 +22,7 @@ def check_login_request(user: LoginM):
             sneakers_basket=None
 
         if get_user[8] is not None:
+            mas_sneakers_orders = json.loads(get_user[8])
             sneakers_orders=get_orders(get_user[0])
             if (sneakers_orders == 500):
                 return 500   

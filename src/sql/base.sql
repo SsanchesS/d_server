@@ -83,3 +83,10 @@ INSERT INTO delivery_methods (method_des) VALUES ('Самовывоз из ма�
 INSERT INTO payment_methods (method_des) VALUES ('Кредитная карта');
 INSERT INTO payment_methods (method_des) VALUES ('Банковский перевод'); 
 INSERT INTO payment_methods (method_des) VALUES ('Оплата наличными'); 
+
+-- tests
+INSERT INTO orders (user_id, order_date, sum, status, delivery_method_id, payment_method_id) VALUES (2, '2024-05-07', 13900, 'В обработке', 0, 0);
+INSERT INTO orders (user_id, order_date, sum, status, delivery_method_id, payment_method_id) VALUES (2, '2024-12-12', 15300, 'В пути',1,2);
+UPDATE users SET sneakers_orders = '[0,1]' WHERE id = 2;
+
+UPDATE users SET sneakers_basket = '[1,3]' WHERE id = 2;

@@ -1,4 +1,5 @@
 import sqlite3
+import json
 from src.base import base_worker
 from src.models import usersM,ordersM
 
@@ -9,18 +10,26 @@ def get_user(id):
             return None
         user = user[0]
 
-        sneakers_basket = []
-        for item in user[7]:
-            id = item[0]
-            sneaker = get_sneaker(id)
-            if (sneaker == 500):
+        if user[7] is not None:
+            sneakers_basket = []
+            mas_sneakers_basket = json.loads(user[7])
+            for item in mas_sneakers_basket:
+                id = item
+                sneaker = get_sneaker(id)
+                if (sneaker == 500):
+                    return 500
+                sneakers_basket.append(sneaker)
+        else:
+            sneakers_basket=None
+        
+        if user[8] is not None:
+            mas_sneakers_orders = json.loads(user[8])
+            sneakers_orders=get_orders(user[0])
+            if (sneakers_orders == 500):
                 return 500
-            sneakers_basket.append(sneaker)
-
-        sneakers_orders=get_orders(user[0])
-        if (sneakers_orders == 500):
-            return 500
-
+        else:
+            sneakers_orders=None
+            
         user = {"id":user[0],"f_name":user[1],"s_name":user[2],"password":None,"email":user[4],"role_id":user[5],"itemsPrice":user[6],"sneakers_basket":sneakers_basket,"sneakers_orders":sneakers_orders}
         return user  
     except Exception as e:
@@ -105,9 +114,9 @@ def get_sneakers():
 def get_sneaker(id):
     try:
         get_sneaker = base_worker.insert_data(f"SELECT * FROM sneakers WHERE id = {id}",())
+        get_sneaker=get_sneaker[0]
         if not get_sneaker:
             return None
-        
         sneaker = {"id":get_sneaker[0],"des":get_sneaker[1],"price":get_sneaker[2],"img":get_sneaker[3],"category_id":get_sneaker[4]}
         return sneaker
     
@@ -123,7 +132,17 @@ def get_orders(user_id):
         
         orders = []
         for item in get_orders:
-            order = {"id":item[0],"user_id":None,"order_date":item[2],"sum":item[3],"status":item[4],"delivery_method_id":item[5],"payment_method_id":item[6]}
+            delivery_method = base_worker.insert_data(f"SELECT method_des FROM delivery_methods WHERE id = {item[5]}",())
+            delivery_method = [0]
+            if not delivery_method:
+                return None
+            
+            payment_method = base_worker.insert_data(f"SELECT method_des FROM payment_methods WHERE id = {item[6]}",())
+            payment_method = [0]
+            if not payment_method:
+                return None
+            
+            order = {"id":item[0],"user_id":None,"order_date":item[2],"sum":item[3],"status":item[4],"delivery_method":delivery_method,"payment_method":payment_method} # "sneakers":"[]"
             orders.append(order)
         return orders
     

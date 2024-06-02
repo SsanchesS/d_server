@@ -60,9 +60,9 @@ def upd_user(id, user: usersM): # сюда свой id из клинтка пи�
 
         if user.sneakers_orders is not None and user.sneakers_orders != '':
             update_fields.append(f"sneakers_orders = '{user.sneakers_orders}'")
-
+        print(user.sneakers_basket)
         update_fields_str = ', '.join(update_fields)
-
+        print(user.sneakers_basket)
         try:
             user_id = base_worker.insert_data(f"""
             UPDATE users

@@ -15,7 +15,6 @@ class usersM(BaseModel):
     email: Optional[EmailStr] = None
     role_id: Optional[int] = 0
 
-    itemsPrice: Optional[int] = 0                             # or None
     sneakers_basket: Optional[str] = None
     sneakers_orders: Optional[str] = None
 

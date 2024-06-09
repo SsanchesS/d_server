@@ -10,9 +10,9 @@ def get_user(id):
             return None
         user = user[0]
 
-        if user[7] is not None:
+        if user[6] is not None:
             sneakers_basket = []
-            mas_sneakers_basket = json.loads(user[7])
+            mas_sneakers_basket = json.loads(user[6])
             for item in mas_sneakers_basket:
                 id = item
                 sneaker = get_sneaker(id)
@@ -22,15 +22,15 @@ def get_user(id):
         else:
             sneakers_basket=None
         
-        if user[8] is not None:
-            mas_sneakers_orders = json.loads(user[8])
+        if user[7] is not None:
+            mas_sneakers_orders = json.loads(user[7])
             sneakers_orders=get_orders(user[0])
             if (sneakers_orders == 500):
                 return 500
         else:
             sneakers_orders=None
             
-        user = {"id":user[0],"f_name":user[1],"s_name":user[2],"password":None,"email":user[4],"role_id":user[5],"itemsPrice":user[6],"sneakers_basket":sneakers_basket,"sneakers_orders":sneakers_orders}
+        user = {"id":user[0],"f_name":user[1],"s_name":user[2],"password":user[3],"email":user[4],"role_id":user[5],"sneakers_basket":sneakers_basket,"sneakers_orders":sneakers_orders}
         return user  
     except Exception as e:
         print(f"Ошибка {e}")
@@ -52,17 +52,13 @@ def upd_user(id, user: usersM): # сюда свой id из клинтка пи�
         if user.email is not None and user.email != '':
             update_fields.append(f"email = '{user.email}'")
 
-        if user.itemsPrice is not None and user.itemsPrice != '':
-            update_fields.append(f"itemsPrice = '{user.itemsPrice}'")
-
         if user.sneakers_basket is not None and user.sneakers_basket != '':
             update_fields.append(f"sneakers_basket = '{user.sneakers_basket}'")
 
         if user.sneakers_orders is not None and user.sneakers_orders != '':
             update_fields.append(f"sneakers_orders = '{user.sneakers_orders}'")
-        print(user.sneakers_basket)
+
         update_fields_str = ', '.join(update_fields)
-        print(user.sneakers_basket)
         try:
             user_id = base_worker.insert_data(f"""
             UPDATE users
@@ -76,7 +72,7 @@ def upd_user(id, user: usersM): # сюда свой id из клинтка пи�
         if not user_id:
             return None
         user_id = user_id[0]
-        user = {"id":user_id[0],"f_name":None,"s_name":None,"password":None,"email":None,"role_id":None,"itemsPrice":None,"sneakers_basket":None,"sneakers_orders":None}
+        user = {"id":user_id[0],"f_name":None,"s_name":None,"password":None,"email":None,"role_id":None,"sneakers_basket":None,"sneakers_orders":None}
         return user  
     except Exception as e:
         print(f"Ошибка {e}")
@@ -89,7 +85,7 @@ def del_user(id): # сюда свой id из клинтка пихаем из �
             return None
         else:
             user_id = user_id[0]
-            user = {"id":user_id[0],"f_name":None,"s_name":None,"password":None,"email":None,"role_id":None,"itemsPrice":None,"sneakers_basket":None,"sneakers_orders":None}
+            user = {"id":user_id[0],"f_name":None,"s_name":None,"password":None,"email":None,"role_id":None,"sneakers_basket":None,"sneakers_orders":None}
             return user  
     except Exception as e:
         print(f"Ошибка {e}")
@@ -132,17 +128,18 @@ def get_orders(user_id):
         
         orders = []
         for item in get_orders:
-            delivery_method = base_worker.insert_data(f"SELECT method_des FROM delivery_methods WHERE id = {item[5]}",())
-            delivery_method = [0]
-            if not delivery_method:
-                return None
+            # delivery_method = base_worker.insert_data(f"SELECT method_des FROM delivery_methods WHERE id = {item[5]}",())
+            # delivery_method = [0]
+            # if not delivery_method:
+            #     return None
             
-            payment_method = base_worker.insert_data(f"SELECT method_des FROM payment_methods WHERE id = {item[6]}",())
-            payment_method = [0]
-            if not payment_method:
-                return None
+            # payment_method = base_worker.insert_data(f"SELECT method_des FROM payment_methods WHERE id = {item[6]}",())
+            # payment_method = [0]
+            # if not payment_method:
+            #     return None
             
-            order = {"id":item[0],"user_id":None,"order_date":item[2],"sum":item[3],"status":item[4],"delivery_method":delivery_method,"payment_method":payment_method} # "sneakers":"[]"
+            # order = {"id":item[0],"user_id":item[1],"order_date":item[2],"sum":item[3],"status":item[4],"delivery_method":delivery_method,"payment_method":payment_method} # "sneakers":"[]"
+            order = {"id":item[0],"user_id":item[1],"order_date":item[2],"sum":item[3],"status":item[4],"delivery_method_id":item[5],"payment_method_id":item[6]} # "sneakers":"[]"
             orders.append(order)
         return orders
     
@@ -153,6 +150,7 @@ def get_orders(user_id):
 def create_order(order:ordersM):
     try:
         insert_fields = ["user_id", "order_date", "sum","status","delivery_method_id","payment_method_id"]
+        order.status = 'В обработке'
         insert_values = [f"'{order.user_id}'",f"'{order.order_date}'",f"'{order.sum}'",f"'{order.status}'",f"'{order.delivery_method_id}'",f"'{order.payment_method_id}'"]
 
         fields_str = ', '.join(insert_fields)
@@ -170,21 +168,86 @@ def create_order(order:ordersM):
         if not new_id:
             return None    
         new_id = new_id[0]                                                                                                
-        order = {"id":new_id[0],"user_id":None,"order_date":order.order_date,"sum":order.sum,"status":order.status,"delivery_method_id":order.delivery_method_id,"payment_method_id":order.payment_method_id}
+        order = {"id":new_id[0],"user_id":order.user_id,"order_date":order.order_date,"sum":order.sum,"status":order.status,"delivery_method_id":order.delivery_method_id,"payment_method_id":order.payment_method_id}
         return order   
     except sqlite3.IntegrityError as e:
         print(f"Ошибка: {e}")
         return None
     
-def del_order(user_id, id):
+def upd_order(id, order: ordersM): # сюда свой id из клинтка пихаем из обьекта
     try:
-        order_id = base_worker.insert_data(f"DELETE FROM orders WHERE user_id = ? AND id = ? RETURNING id;",(user_id,id))
+        update_fields = []
+
+        if order.order_date is not None and order.order_date != '':
+            update_fields.append(f"order_date = '{order.order_date}'")
+
+        if order.sum is not None and order.sum != '':
+            update_fields.append(f"sum = '{order.sum}'")
+
+        if order.status is not None and order.status != '':
+            update_fields.append(f"status = '{order.status}'")
+
+        if order.delivery_method_id is not None and order.delivery_method_id != '':
+            update_fields.append(f"delivery_method_id = '{order.delivery_method_id}'")
+
+        if order.payment_method_id is not None and order.payment_method_id != '':
+            update_fields.append(f"payment_method_id = '{order.payment_method_id}'")
+
+        update_fields_str = ', '.join(update_fields)
+        try:
+            order_id = base_worker.insert_data(f"""
+            UPDATE orders
+            SET {update_fields_str}
+            WHERE id = {id} 
+            RETURNING id;
+            """, ())
+        except sqlite3.IntegrityError as e:
+            print(f"Ошибка: {e}")
+            return None
+        if not order_id:
+            return None
+        order_id = order_id[0]
+        order = {"id":order_id[0],"user_id":None,"order_date":None,"sum":None,"status":None,"delivery_method_id":None,"payment_method_id":None}
+        return order  
+    except Exception as e:
+        print(f"Ошибка {e}")
+        return 500
+    
+def del_order(id):
+    try:
+        order_id = base_worker.insert_data(f"DELETE FROM orders WHERE id = {id} RETURNING id;",())
         if not order_id:
             return None
         else:
-            order_id = order_id[0]
+            order_id = order_id[0]            
             order = {"id":order_id[0],"user_id":None,"order_date":None,"sum":None,"status":None,"delivery_method_id":None,"payment_method_id":None}
             return order  
+    except Exception as e:
+        print(f"Ошибка {e}")
+        return 500
+    
+#####
+def get_methods():
+    try:
+        get_delivery_methods = base_worker.insert_data(f"SELECT * FROM delivery_methods",())
+        get_payment_methods = base_worker.insert_data(f"SELECT * FROM payment_methods",())
+
+        if not get_delivery_methods:
+            return None
+        if not get_payment_methods:
+            return None
+        
+        delivery_methods = []
+        for item in get_delivery_methods:
+            delivery_method = {"id":item[0],"method_des":item[1]}
+            delivery_methods.append(delivery_method)
+            
+        payment_methods = []
+        for item in get_payment_methods:
+            payment_method = {"id":item[0],"method_des":item[1]}
+            payment_methods.append(payment_method)
+
+        return {"delivery_methods":delivery_methods,"payment_methods":payment_methods}
     except Exception as e:
         print(f"Ошибка {e}")
         return 500

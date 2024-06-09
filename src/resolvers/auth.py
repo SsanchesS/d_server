@@ -9,9 +9,9 @@ def check_login_request(user: LoginM):
             return None
         get_user = get_user[0]   
 
-        if get_user[7] is not None:            
+        if get_user[6] is not None:            
             sneakers_basket = []
-            mas_sneakers_basket = json.loads(get_user[7])
+            mas_sneakers_basket = json.loads(get_user[6])
             for item in mas_sneakers_basket:
                 id = item
                 sneaker = get_sneaker(id)
@@ -21,15 +21,15 @@ def check_login_request(user: LoginM):
         else:
             sneakers_basket=None
 
-        if get_user[8] is not None:
-            mas_sneakers_orders = json.loads(get_user[8])
+        if get_user[7] is not None:
+            mas_sneakers_orders = json.loads(get_user[7])
             sneakers_orders=get_orders(get_user[0])
             if (sneakers_orders == 500):
                 return 500   
         else:
             sneakers_orders=None
         
-        user = {"id":get_user[0],"f_name":get_user[1],"s_name":get_user[2],"password":None,"email":get_user[4],"role_id":get_user[5],"itemsPrice":get_user[6],"sneakers_basket":sneakers_basket,"sneakers_orders":sneakers_orders}    
+        user = {"id":get_user[0],"f_name":get_user[1],"s_name":get_user[2],"password":get_user[3],"email":get_user[4],"role_id":get_user[5],"sneakers_basket":sneakers_basket,"sneakers_orders":sneakers_orders}    
         return user 
     except Exception as e:
         print(f"Ошибка {e}")

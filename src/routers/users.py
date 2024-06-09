@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from src.models import usersM,ordersM
-from src.resolvers.users import get_user,upd_user,del_user, get_orders,create_order,del_order ,get_sneakers
+from src.resolvers.users import get_user,upd_user,del_user, get_orders,create_order,upd_order,del_order ,get_sneakers,get_methods
 
 users_router = APIRouter()
 
@@ -58,11 +58,29 @@ def f_create_order(order:ordersM):
         return {"code": 500, "message": "Ошибка сервера","order":None}
     return {"code": 201, "message": "Успешно",'order': order}
 
-@users_router.delete('/orders/{user_id}/{id}')
-def f_delete_order(user_id: int,id: int):
-    order = del_order(user_id,id)
+@users_router.put('/orders/{id}')
+def f_update_order(id: int, order: ordersM):
+    order = upd_order(id, order)
+    if order == 500:
+        return {"code": 500, "message": "Ошибка сервера","order":None}
+    return {"code": 201, "message": "Успешно",'order': order}
+
+@users_router.delete('/orders/{id}')
+def f_delete_order(id: int):
+    order = del_order(id)
     if order == 500:
         return {"code": 500, "message": "Ошибка сервера","order":None}
     if order is None:
         return {"code": 404, "message": f"Заказы не найдены","order":None}
     return {"code": 201, "message": "Успешно",'order': order}
+
+###########
+@users_router.get('/methods/')
+def f_get_methods():
+    methods = get_methods()
+    if methods == 500:
+        return {"code": 500, "message": "Ошибка сервера","methods":None}
+    if methods is None:
+        return {"code": 404, "message": f"Методы не найдены","methods":None}
+    return {"code": 201, "message": "Успешно",'methods': methods}
+###########

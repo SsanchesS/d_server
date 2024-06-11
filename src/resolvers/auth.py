@@ -19,15 +19,16 @@ def check_login_request(user: LoginM):
                     return 500
                 sneakers_basket.append(sneaker)     
         else:
-            sneakers_basket=None
+            sneakers_basket= []
 
         if get_user[7] is not None:
+            sneakers_orders = []
             mas_sneakers_orders = json.loads(get_user[7])
             sneakers_orders=get_orders(get_user[0])
             if (sneakers_orders == 500):
                 return 500   
         else:
-            sneakers_orders=None
+            sneakers_orders= []
         
         user = {"id":get_user[0],"f_name":get_user[1],"s_name":get_user[2],"password":get_user[3],"email":get_user[4],"role_id":get_user[5],"sneakers_basket":sneakers_basket,"sneakers_orders":sneakers_orders}    
         return user 

@@ -46,3 +46,4 @@ class ordersM(BaseModel):
     status: Optional[str] = None
     delivery_method_id: Optional[int] = None
     payment_method_id: Optional[int] = None
+    sneakers: Optional[str] = None

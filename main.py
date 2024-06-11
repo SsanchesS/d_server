@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
@@ -22,7 +22,9 @@ app = FastAPI()
 
 # CORS
 origins = [
-    "http://localhost:3000",  # адрес клиентского приложения
+    # адрес клиентского приложения
+    "http://localhost:3000",
+    "https://swfnhkr9-3000.euw.devtunnels.ms"
 ]
 
 app.add_middleware(
@@ -35,7 +37,14 @@ app.add_middleware(
 
 @app.get("/")
 def main_page():
-    return {'page': 'Connection in correct'}
+    return {"code": 200, "message": "Connection in correct",'user': None}
+
+# @app.websocket("/ws")
+# async def websocket_endpoint(websocket: WebSocket):
+#     await websocket.accept()
+#     while True:
+#         data = await websocket.receive_text()
+#         await websocket.send_text(f"Message text was: {data}")
     
 app.include_router(auth_router, prefix='/auth')
 app.include_router(registration_router, prefix='/registration')

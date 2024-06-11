@@ -8,7 +8,7 @@ CREATE TABLE users(
   s_name TEXT,
   password TEXT,
   email TEXT UNIQUE,
-  role_id INTEGER DEFAULT 0,
+  role_id INTEGER DEFAULT 1,
 
   sneakers_basket TEXT DEFAULT Null,
   sneakers_orders TEXT DEFAULT Null,
@@ -50,13 +50,14 @@ CREATE TABLE orders(
   status TEXT,
   delivery_method_id INTEGER, -- способ доставки
   payment_method_id INTEGER, -- способ оплаты
+  sneakers TEXT,
   FOREIGN KEY (user_id) REFERENCES users (id),
   FOREIGN KEY (delivery_method_id) REFERENCES delivery_methods (id),
   FOREIGN KEY (payment_method_id) REFERENCES payment_methods (id)
 );
 INSERT INTO role (role) VALUES ('user');
 INSERT INTO role (role) VALUES ('admin');
-INSERT INTO users (f_name, s_name, email, password, role_id) VALUES ('admin','admin', 'admin@test.ru', 'admin@test.ru', 1);
+INSERT INTO users (f_name, s_name, email, password, role_id) VALUES ('admin','admin', 'admin@test.ru', 'admin@test.ru', 2);
 INSERT INTO users (f_name, s_name, email, password) VALUES ('user','user', 'user@test.ru', 'user@test.ru');
 
 INSERT INTO categories (name, des) VALUES ('ПОВСЕДНЕВНЫЕ КРОССОВКИ','Повседневные кроссовки отличаются почти полным отсутствием специальных технологий. Основными характеристиками модели являются удобство и легкость. Обувь для пеших прогулок изготавливается из натуральных материалов, пропускающих воздух. Популярным покрытием также является мембрана, которая защищает ноги от промокания и ветра. Обычно кроссовки оснащены плоской подошвой из полиуретановой пены.');
@@ -86,6 +87,6 @@ INSERT INTO payment_methods (method_des) VALUES ('Оплата наличным�
 -- tests
 INSERT INTO orders (user_id, order_date, sum, status, delivery_method_id, payment_method_id) VALUES (2, '2024-05-07', 13900, 'В обработке', 0, 0);
 INSERT INTO orders (user_id, order_date, sum, status, delivery_method_id, payment_method_id) VALUES (2, '2024-12-12', 15300, 'В пути',1,2);
-UPDATE users SET sneakers_orders = '[0,1]' WHERE id = 2;
 
+UPDATE users SET sneakers_orders = '[0,1]' WHERE id = 2;
 UPDATE users SET sneakers_basket = '[1,3]' WHERE id = 2;

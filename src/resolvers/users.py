@@ -1,5 +1,4 @@
 import sqlite3
-import json
 from src.base import base_worker
 from src.models import usersM,ordersM
 
@@ -9,35 +8,14 @@ def get_user(id):
         if not user:
             return None
         user = user[0]
-
-        if user[6] is not None:
-            sneakers_basket = []
-            mas_sneakers_basket = json.loads(user[6])
-            for item in mas_sneakers_basket:
-                id = item
-                sneaker = get_sneaker(id)
-                if (sneaker == 500):
-                    return 500
-                sneakers_basket.append(sneaker)
-        else:
-            sneakers_basket= []
-        
-        if user[7] is not None:
-            sneakers_orders = []
-            mas_sneakers_orders = json.loads(user[7])
-            sneakers_orders=get_orders(user[0])
-            if (sneakers_orders == 500):
-                return 500
-        else:
-            sneakers_orders= []
             
-        user = {"id":user[0],"f_name":user[1],"s_name":user[2],"password":user[3],"email":user[4],"role_id":user[5],"sneakers_basket":sneakers_basket,"sneakers_orders":sneakers_orders}
+        user = {"id":user[0],"f_name":user[1],"s_name":user[2],"password":user[3],"email":user[4],"role_id":user[5]}
         return user  
     except Exception as e:
         print(f"Ошибка {e}")
         return 500
 
-def upd_user(id, user: usersM): # сюда свой id из клинтка пихаем из обьекта
+def upd_user(id, user: usersM):
     try:
         update_fields = []
 
@@ -53,12 +31,6 @@ def upd_user(id, user: usersM): # сюда свой id из клинтка пи�
         if user.email is not None and user.email != '':
             update_fields.append(f"email = '{user.email}'")
 
-        if user.sneakers_basket is not None and user.sneakers_basket != '':
-            update_fields.append(f"sneakers_basket = '{user.sneakers_basket}'")
-
-        if user.sneakers_orders is not None and user.sneakers_orders != '':
-            update_fields.append(f"sneakers_orders = '{user.sneakers_orders}'")
-
         update_fields_str = ', '.join(update_fields)
         try:
             user_id = base_worker.insert_data(f"""
@@ -73,20 +45,20 @@ def upd_user(id, user: usersM): # сюда свой id из клинтка пи�
         if not user_id:
             return None
         user_id = user_id[0]
-        user = {"id":user_id[0],"f_name":None,"s_name":None,"password":None,"email":None,"role_id":None,"sneakers_basket":None,"sneakers_orders":None}
+        user = {"id":user_id[0],"f_name":None,"s_name":None,"password":None,"email":None,"role_id":None}
         return user  
     except Exception as e:
         print(f"Ошибка {e}")
         return 500
 
-def del_user(id): # сюда свой id из клинтка пихаем из обьекта
+def del_user(id):
     try:
         user_id = base_worker.insert_data(f"DELETE FROM users WHERE id = {id} RETURNING id;",())
         if not user_id:
             return None
         else:
             user_id = user_id[0]
-            user = {"id":user_id[0],"f_name":None,"s_name":None,"password":None,"email":None,"role_id":None,"sneakers_basket":None,"sneakers_orders":None}
+            user = {"id":user_id[0],"f_name":None,"s_name":None,"password":None,"email":None,"role_id":None}
             return user  
     except Exception as e:
         print(f"Ошибка {e}")
@@ -104,19 +76,6 @@ def get_sneakers():
             sneaker = {"id":item[0],"des":item[1],"price":item[2],"img":item[3],"category_id":item[4]}
             sneakers.append(sneaker)
         return sneakers
-    except Exception as e:
-        print(f"Ошибка {e}")
-        return 500
-
-def get_sneaker(id):
-    try:
-        get_sneaker = base_worker.insert_data(f"SELECT * FROM sneakers WHERE id = {id}",())
-        get_sneaker=get_sneaker[0]
-        if not get_sneaker:
-            return None
-        sneaker = {"id":get_sneaker[0],"des":get_sneaker[1],"price":get_sneaker[2],"img":get_sneaker[3],"category_id":get_sneaker[4]}
-        return sneaker
-    
     except Exception as e:
         print(f"Ошибка {e}")
         return 500
@@ -174,8 +133,8 @@ def upd_order(id, order: ordersM): # сюда свой id из клинтка п
         if order.sum is not None and order.sum != '':
             update_fields.append(f"sum = '{order.sum}'")
 
-        if order.status is not None and order.status != '':
-            update_fields.append(f"status = '{order.status}'")
+        # if order.status is not None and order.status != '':
+        #     update_fields.append(f"status = '{order.status}'")
 
         if order.delivery_method_id is not None and order.delivery_method_id != '':
             update_fields.append(f"delivery_method_id = '{order.delivery_method_id}'")

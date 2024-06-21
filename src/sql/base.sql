@@ -18,7 +18,9 @@ CREATE TABLE sneakers( -- products
   price INTEGER,
   img TEXT,
   category_id INTEGER,
-  FOREIGN KEY (category_id) REFERENCES categories (id)
+  promotion_id INTEGER,
+  FOREIGN KEY (category_id) REFERENCES categories (id),
+  FOREIGN KEY (promotion_id) REFERENCES promotions (id)
 );
 CREATE TABLE categories(
   id INTEGER PRIMARY KEY,
@@ -61,18 +63,18 @@ INSERT INTO categories (name, des) VALUES ('ПОВСЕДНЕВНЫЕ КРОСС�
 INSERT INTO categories (name, des) VALUES ('БЕГОВЫЕ КРОССОВКИ','Кроссовки для бега обладают качественной амортизацией. В зависимости от нагрузки используется эластичный и упругий пеноматериал EVA или более плотный полиуретан. Подошва имеет протекторы для сцепления и разнонаправленные гибкие канавки для защиты от камней и грязи. Аутсоль обычно изготавливается из углеродистой или надувной резины. Первый вариант прочнее, но при этом жестче и тяжелее.');
 INSERT INTO categories (name, des) VALUES ('БАСКЕТБОЛЬНЫЕ КРОССОВКИ','Верхняя часть обуви обычно состоит из кожи, парусины или синтетических материалов. Некоторые модели баскетбольных кроссовок оснащены дышащими сетчатыми панелями, усиленными жестким каркасом. Аутсоль имеет глубокий рельефный рисунок для надежного сцепления. Для игры в зале используется мягкая подошва, а на улице — более твердая.');
 
-INSERT INTO sneakers (des, price, img, category_id) VALUES ('Мужские Кроссовки Nike Blazer Mid Suede',12999, './img/1.png', 1);
-INSERT INTO sneakers (des, price, img, category_id) VALUES ('Женские Кроссовки Nike Air Max 270',12999, './img/2.png', 2);
-INSERT INTO sneakers (des, price, img, category_id) VALUES ('Мужские Кроссовки Nike Gavaya Mid',8499, './img/3.png', 3);
-INSERT INTO sneakers (des, price, img, category_id) VALUES ('Мужские Кроссовки Under Armour Curry 8',15199, './img/4.png', 1);
-INSERT INTO sneakers (des, price, img, category_id) VALUES ('Женские Кроссовки Nike Kyrie 7',11299, './img/5.png', 1);
-INSERT INTO sneakers (des, price, img, category_id) VALUES ('Мужские Кроссовки Jordan Air Jordan 11',12999, './img/6.png', 2);
-INSERT INTO sneakers (des, price, img, category_id) VALUES ('Женские Кроссовки Nike Blazer Little Suede',10799, './img/7.png', 1);
-INSERT INTO sneakers (des, price, img, category_id) VALUES ('Мужские Кроссовки Nike LeBron XVIII',16499, './img/8.png', 3);
-INSERT INTO sneakers (des, price, img, category_id) VALUES ('Женские Кроссовки Nike Lebron XVIII Low',13999, './img/9.png', 3);
-INSERT INTO sneakers (des, price, img, category_id) VALUES ('Мужские Кроссовки Nike Glazer Suede',8499, './img/10.png', 2);
-INSERT INTO sneakers (des, price, img, category_id) VALUES ('Женские Кроссовки Puma X Aka Boku Future Rider',14199, './img/11.png', 1);
-INSERT INTO sneakers (des, price, img, category_id) VALUES ('Мужские Кроссовки Nike Kyrie Flytrap IV',11399,'./img/12.png', 2);
+INSERT INTO sneakers (des, price, img, category_id,promotion_id) VALUES ('Мужские Кроссовки Nike Blazer Mid Suede',12999, './img/1.png', 1,1);
+INSERT INTO sneakers (des, price, img, category_id,promotion_id) VALUES ('Женские Кроссовки Nike Air Max 270',12999, './img/2.png', 2,2);
+INSERT INTO sneakers (des, price, img, category_id,promotion_id) VALUES ('Мужские Кроссовки Nike Gavaya Mid',8499, './img/3.png', 3,2);
+INSERT INTO sneakers (des, price, img, category_id,promotion_id) VALUES ('Мужские Кроссовки Under Armour Curry 8',15199, './img/4.png', 1,1);
+INSERT INTO sneakers (des, price, img, category_id,promotion_id) VALUES ('Женские Кроссовки Nike Kyrie 7',11299, './img/5.png', 1,1);
+INSERT INTO sneakers (des, price, img, category_id,promotion_id) VALUES ('Мужские Кроссовки Jordan Air Jordan 11',12999, './img/6.png', 2,2);
+INSERT INTO sneakers (des, price, img, category_id,promotion_id) VALUES ('Женские Кроссовки Nike Blazer Little Suede',10799, './img/7.png', 1,1);
+INSERT INTO sneakers (des, price, img, category_id,promotion_id) VALUES ('Мужские Кроссовки Nike LeBron XVIII',16499, './img/8.png', 3,2);
+INSERT INTO sneakers (des, price, img, category_id,promotion_id) VALUES ('Женские Кроссовки Nike Lebron XVIII Low',13999, './img/9.png', 3,2);
+INSERT INTO sneakers (des, price, img, category_id,promotion_id) VALUES ('Мужские Кроссовки Nike Glazer Suede',8499, './img/10.png', 2,1);
+INSERT INTO sneakers (des, price, img, category_id,promotion_id) VALUES ('Женские Кроссовки Puma X Aka Boku Future Rider',14199, './img/11.png', 1,1);
+INSERT INTO sneakers (des, price, img, category_id,promotion_id) VALUES ('Мужские Кроссовки Nike Kyrie Flytrap IV',11399,'./img/12.png', 2,2);
 
 INSERT INTO delivery_methods (method_des) VALUES ('Стандартная доставка');
 INSERT INTO delivery_methods (method_des) VALUES ('Самовывоз из магазина');

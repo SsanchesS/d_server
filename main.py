@@ -23,8 +23,9 @@ app = FastAPI()
 # CORS
 origins = [
     # адрес клиентского приложения
-    "http://localhost:3000"
+    # "http://localhost:5173"
     # "https://swfnhkr9-3000.euw.devtunnels.ms"
+    "https://d-client-mauve.vercel.app/"
 ]
 
 app.add_middleware(
